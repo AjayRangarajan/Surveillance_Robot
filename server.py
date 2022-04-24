@@ -24,6 +24,7 @@ class SensorData(db.Model):
 	is_gas_detected  = db.Column(db.Boolean, default=False, nullable=False)
 	is_metal_detected  = db.Column(db.Boolean, default=False, nullable=False)
 	
+	
 	def __repr__(self):
 		return f'Temperature: {self.temperature}\nHummidity: {self.humidity}\nGas:{self.is_gas_detected}\nMetal: {self.is_metal_detected}'
 
@@ -46,12 +47,14 @@ def add_sensor_data():
 	if request.method == 'POST':
 		temperature = request.form.get('temperature')
 		humidity = request.form.get('humidity')
-		is_gas_detected = bool(request.form.get('is_gas_detected'))
-		is_metal_detected = bool(request.form.get('is_metal_detected'))
+		is_gas_detected = True if request.form.get('is_gas_detected') == "True" else False
+		is_metal_detected = True if request.form.get('is_metal_detected') == "True" else False
+
 		sensor_data = SensorData(temperature=temperature, humidity=humidity, is_gas_detected=is_gas_detected, is_metal_detected=is_metal_detected)
 		try:
 			db.session.add(sensor_data)
 			db.session.commit()
+			print(sensor_data)
 			print("Sensor data added successfully to the database.")
 			return "Sensor data added successfully to the database."
 		except Exception as e:
